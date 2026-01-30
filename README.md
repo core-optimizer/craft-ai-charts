@@ -39,7 +39,7 @@ kubectl get modeldeployments -A
 
 | Chart | Description | Version |
 |-------|-------------|---------|
-| [craft-ai-platform](./charts/craft-ai-platform) | Craft AI Platform controller and dashboard | 0.1.0 |
+| [craft-ai-platform](./charts/craft-ai-platform) | Craft AI Platform controller and dashboard | 0.2.0 |
 
 ## Configuration
 
