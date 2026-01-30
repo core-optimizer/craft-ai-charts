@@ -3,9 +3,9 @@ entries:
   craft-ai-platform:
   - apiVersion: v2
     appVersion: 0.1.0
-    created: "2026-01-30T08:11:05.878365587Z"
+    created: "2026-01-30T08:11:22.492196415Z"
     description: Craft AI Platform - Kubernetes-native ML/AI Model Management Platform
-    digest: 0134a54b560018fb55d42dc70b65a2eecac98fb1a07319dc97e62bad3e9217d1
+    digest: 0edf5100b54b1ba2599c77999ae9c067a3a38742913491297e7c991710e3bd7c
     home: https://github.com/core-optimizer/craft-ai-platform
     icon: https://raw.githubusercontent.com/core-optimizer/craft-ai-charts/main/icon.png
     keywords:
@@ -25,4 +25,4 @@ entries:
     urls:
     - https://core-optimizer.github.io/craft-ai-charts/craft-ai-platform-0.1.0.tgz
     version: 0.1.0
-generated: "2026-01-30T08:11:05.875555407Z"
+generated: "2026-01-30T08:11:22.49132451Z"
