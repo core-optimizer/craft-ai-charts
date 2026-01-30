@@ -1,0 +1,69 @@
+🚀 Craft AI Platform has been installed!
+
+{{- if .Values.dashboard.enabled }}
+
+📊 Dashboard Access:
+{{- if .Values.dashboard.ingress.enabled }}
+  Access the dashboard at:
+  {{- range .Values.dashboard.ingress.hosts }}
+    http{{ if $.Values.dashboard.ingress.tls }}s{{ end }}://{{ .host }}
+  {{- end }}
+{{- else if eq .Values.dashboard.service.type "NodePort" }}
+  Get the NodePort:
+    export NODE_PORT=$(kubectl get svc {{ include "craft-ai-platform.fullname" . }}-dashboard -n {{ include "craft-ai-platform.namespace" . }} -o jsonpath='{.spec.ports[0].nodePort}')
+    export NODE_IP=$(kubectl get nodes -o jsonpath='{.items[0].status.addresses[0].address}')
+    echo "Dashboard: http://$NODE_IP:$NODE_PORT"
+{{- else }}
+  Port-forward the dashboard:
+    kubectl port-forward svc/{{ include "craft-ai-platform.fullname" . }}-dashboard {{ .Values.dashboard.service.port }}:{{ .Values.dashboard.service.port }} -n {{ include "craft-ai-platform.namespace" . }}
+  
+  Then visit: http://localhost:{{ .Values.dashboard.service.port }}
+{{- end }}
+{{- end }}
+
+📖 Quick Start:
+  1. Create a ModelSpec:
+     kubectl apply -f - <<EOF
+     apiVersion: craft.ai/v1alpha1
+     kind: ModelSpec
+     metadata:
+       name: llama3-8b
+     spec:
+       category: llm
+       provider: meta
+       displayName: "Llama 3 8B Instruct"
+       parameters: "8B"
+       contextLength: 8192
+       source:
+         huggingFace: meta-llama/Meta-Llama-3-8B-Instruct
+       serving:
+         runtime: vllm
+         port: 8000
+       variants:
+         - quantization: fp16
+           memory:
+             weights: "16Gi"
+     EOF
+
+  2. Create a ModelDeployment:
+     kubectl apply -f - <<EOF
+     apiVersion: craft.ai/v1alpha1
+     kind: ModelDeployment
+     metadata:
+       name: llama3-8b-prod
+       namespace: default
+     spec:
+       modelRef: llama3-8b
+       quantization: fp16
+       scaling:
+         minReplicas: 1
+         maxReplicas: 3
+     EOF
+
+  3. Check status:
+     kubectl get modelspecs
+     kubectl get modeldeployments -A
+
+📚 Documentation: https://github.com/core-optimizer/craft-ai-platform
+
+Happy deploying! 🎉

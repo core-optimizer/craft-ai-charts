@@ -1,0 +1,20 @@
+apiVersion: v2
+name: craft-ai-platform
+description: Craft AI Platform - Kubernetes-native ML/AI Model Management Platform
+type: application
+version: 0.1.0
+appVersion: "0.1.0"
+keywords:
+  - kubernetes
+  - machine-learning
+  - ai
+  - model-serving
+  - mlops
+maintainers:
+  - name: Craft AI Team
+    email: team@craft.ai
+home: https://github.com/core-optimizer/craft-ai-platform
+sources:
+  - https://github.com/core-optimizer/craft-ai-platform
+icon: https://raw.githubusercontent.com/core-optimizer/craft-ai-charts/main/icon.png
+kubeVersion: ">=1.26.0-0"

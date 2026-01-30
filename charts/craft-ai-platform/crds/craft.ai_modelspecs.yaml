@@ -1,0 +1,341 @@
+---
+apiVersion: apiextensions.k8s.io/v1
+kind: CustomResourceDefinition
+metadata:
+  annotations:
+    controller-gen.kubebuilder.io/version: v0.16.5
+  name: modelspecs.craft.ai
+spec:
+  group: craft.ai
+  names:
+    kind: ModelSpec
+    listKind: ModelSpecList
+    plural: modelspecs
+    shortNames:
+    - ms
+    singular: modelspec
+  scope: Cluster
+  versions:
+  - additionalPrinterColumns:
+    - jsonPath: .spec.category
+      name: Category
+      type: string
+    - jsonPath: .spec.provider
+      name: Provider
+      type: string
+    - jsonPath: .spec.parameters
+      name: Parameters
+      type: string
+    - jsonPath: .status.deploymentCount
+      name: Deployments
+      type: integer
+    - jsonPath: .metadata.creationTimestamp
+      name: Age
+      type: date
+    name: v1alpha1
+    schema:
+      openAPIV3Schema:
+        description: |-
+          ModelSpec is the Schema for the modelspecs API
+          It defines a model's characteristics for the Craft AI Platform catalog
+        properties:
+          apiVersion:
+            description: |-
+              APIVersion defines the versioned schema of this representation of an object.
+              Servers should convert recognized schemas to the latest internal value, and
+              may reject unrecognized values.
+              More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources
+            type: string
+          kind:
+            description: |-
+              Kind is a string value representing the REST resource this object represents.
+              Servers may infer this from the endpoint the client submits requests to.
+              Cannot be updated.
+              In CamelCase.
+              More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
+            type: string
+          metadata:
+            type: object
+          spec:
+            description: ModelSpecSpec defines the desired state of ModelSpec
+            properties:
+              category:
+                description: Category of the model (llm, embedding, vision, audio,
+                  multimodal)
+                enum:
+                - llm
+                - embedding
+                - vision
+                - audio
+                - multimodal
+                type: string
+              contextLength:
+                description: ContextLength is the maximum context window
+                format: int64
+                type: integer
+              defaultQuantization:
+                default: fp16
+                description: DefaultQuantization is the default quantization to use
+                enum:
+                - fp32
+                - fp16
+                - bf16
+                - int8
+                - int4
+                - awq
+                - gptq
+                type: string
+              description:
+                description: Description of the model
+                type: string
+              displayName:
+                description: DisplayName is a human-readable name
+                type: string
+              family:
+                description: Family relationships (for weight sharing)
+                properties:
+                  adapterSize:
+                    anyOf:
+                    - type: integer
+                    - type: string
+                    description: AdapterSize for adapter-based fine-tunes
+                    pattern: ^(\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))))?$
+                    x-kubernetes-int-or-string: true
+                  adapterType:
+                    description: AdapterType if this is a fine-tune (lora, qlora,
+                      full)
+                    type: string
+                  base:
+                    description: Base model this is derived from
+                    type: string
+                type: object
+              gpu:
+                description: GPU requirements
+                properties:
+                  minGpus:
+                    default: 1
+                    description: MinGPUs is the minimum number of GPUs required
+                    format: int32
+                    minimum: 1
+                    type: integer
+                  minVram:
+                    anyOf:
+                    - type: integer
+                    - type: string
+                    description: MinVRAM is the minimum VRAM required
+                    pattern: ^(\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))))?$
+                    x-kubernetes-int-or-string: true
+                  supportedTypes:
+                    description: SupportedTypes lists compatible GPU types
+                    items:
+                      type: string
+                    type: array
+                type: object
+              license:
+                description: License for the model
+                type: string
+              parameters:
+                description: Parameters count (e.g., "8B", "70B")
+                type: string
+              performance:
+                description: Performance profile
+                properties:
+                  optimalBatchSize:
+                    additionalProperties:
+                      format: int32
+                      type: integer
+                    description: OptimalBatchSize for different latency targets
+                    type: object
+                  tokensPerSecond:
+                    additionalProperties:
+                      format: int32
+                      type: integer
+                    description: TokensPerSecond expected tokens/sec per GPU (for
+                      LLMs)
+                    type: object
+                type: object
+              provider:
+                description: Provider/creator of the model (meta, mistral, openai,
+                  etc.)
+                type: string
+              serving:
+                description: Serving configuration
+                properties:
+                  containerImage:
+                    description: ContainerImage override for serving
+                    type: string
+                  port:
+                    default: 8000
+                    description: Port for the serving endpoint
+                    format: int32
+                    type: integer
+                  runtime:
+                    default: vllm
+                    description: Runtime to use (vllm, tgi, triton, ollama)
+                    enum:
+                    - vllm
+                    - tgi
+                    - triton
+                    - ollama
+                    type: string
+                  supports:
+                    description: Supports lists capabilities (continuousBatching,
+                      pagedAttention, etc.)
+                    items:
+                      type: string
+                    type: array
+                type: object
+              source:
+                description: Source defines where to load the model from
+                properties:
+                  huggingFace:
+                    description: HuggingFace model ID (e.g., "meta-llama/Llama-3.1-8B-Instruct")
+                    type: string
+                  oci:
+                    description: OCI registry image
+                    type: string
+                  s3:
+                    description: S3 URI for model weights
+                    type: string
+                type: object
+              variants:
+                description: Variants defines memory/source for different quantizations
+                items:
+                  description: QuantizationVariant defines characteristics for a specific
+                    quantization
+                  properties:
+                    memory:
+                      description: Memory footprint for this quantization
+                      properties:
+                        kvCachePerToken:
+                          anyOf:
+                          - type: integer
+                          - type: string
+                          description: KVCachePerToken is memory per token in KV cache
+                          pattern: ^(\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))))?$
+                          x-kubernetes-int-or-string: true
+                        overhead:
+                          anyOf:
+                          - type: integer
+                          - type: string
+                          description: Overhead is additional memory overhead
+                          pattern: ^(\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))))?$
+                          x-kubernetes-int-or-string: true
+                        weights:
+                          anyOf:
+                          - type: integer
+                          - type: string
+                          description: Weights is the memory needed for model weights
+                          pattern: ^(\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))))?$
+                          x-kubernetes-int-or-string: true
+                      required:
+                      - weights
+                      type: object
+                    quantization:
+                      description: Quantization type
+                      enum:
+                      - fp32
+                      - fp16
+                      - bf16
+                      - int8
+                      - int4
+                      - awq
+                      - gptq
+                      type: string
+                    source:
+                      description: Source override for this quantization (if different
+                        from default)
+                      properties:
+                        huggingFace:
+                          description: HuggingFace model ID (e.g., "meta-llama/Llama-3.1-8B-Instruct")
+                          type: string
+                        oci:
+                          description: OCI registry image
+                          type: string
+                        s3:
+                          description: S3 URI for model weights
+                          type: string
+                      type: object
+                  required:
+                  - memory
+                  - quantization
+                  type: object
+                type: array
+            required:
+            - category
+            - source
+            type: object
+          status:
+            description: ModelSpecStatus defines the observed state of ModelSpec
+            properties:
+              conditions:
+                description: Conditions represent the latest available observations
+                items:
+                  description: Condition contains details for one aspect of the current
+                    state of this API Resource.
+                  properties:
+                    lastTransitionTime:
+                      description: |-
+                        lastTransitionTime is the last time the condition transitioned from one status to another.
+                        This should be when the underlying condition changed.  If that is not known, then using the time when the API field changed is acceptable.
+                      format: date-time
+                      type: string
+                    message:
+                      description: |-
+                        message is a human readable message indicating details about the transition.
+                        This may be an empty string.
+                      maxLength: 32768
+                      type: string
+                    observedGeneration:
+                      description: |-
+                        observedGeneration represents the .metadata.generation that the condition was set based upon.
+                        For instance, if .metadata.generation is currently 12, but the .status.conditions[x].observedGeneration is 9, the condition is out of date
+                        with respect to the current state of the instance.
+                      format: int64
+                      minimum: 0
+                      type: integer
+                    reason:
+                      description: |-
+                        reason contains a programmatic identifier indicating the reason for the condition's last transition.
+                        Producers of specific condition types may define expected values and meanings for this field,
+                        and whether the values are considered a guaranteed API.
+                        The value should be a CamelCase string.
+                        This field may not be empty.
+                      maxLength: 1024
+                      minLength: 1
+                      pattern: ^[A-Za-z]([A-Za-z0-9_,:]*[A-Za-z0-9_])?$
+                      type: string
+                    status:
+                      description: status of the condition, one of True, False, Unknown.
+                      enum:
+                      - "True"
+                      - "False"
+                      - Unknown
+                      type: string
+                    type:
+                      description: type of condition in CamelCase or in foo.example.com/CamelCase.
+                      maxLength: 316
+                      pattern: ^([a-z0-9]([-a-z0-9]*[a-z0-9])?(\.[a-z0-9]([-a-z0-9]*[a-z0-9])?)*/)?(([A-Za-z0-9][-A-Za-z0-9_.]*)?[A-Za-z0-9])$
+                      type: string
+                  required:
+                  - lastTransitionTime
+                  - message
+                  - reason
+                  - status
+                  - type
+                  type: object
+                type: array
+              deploymentCount:
+                description: DeploymentCount is the number of active deployments using
+                  this spec
+                format: int32
+                type: integer
+              phase:
+                description: Phase of the model spec (Validated, Invalid)
+                type: string
+            type: object
+        type: object
+    served: true
+    storage: true
+    subresources:
+      status: {}

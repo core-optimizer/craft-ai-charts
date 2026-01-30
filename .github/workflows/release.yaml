@@ -1,0 +1,59 @@
+name: Release Charts
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'charts/**'
+  workflow_dispatch:
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pages: write
+      id-token: write
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Configure Git
+        run: |
+          git config user.name "$GITHUB_ACTOR"
+          git config user.email "$GITHUB_ACTOR@users.noreply.github.com"
+
+      - name: Install Helm
+        uses: azure/setup-helm@v4
+        with:
+          version: v3.14.0
+
+      - name: Package charts
+        run: |
+          for chart in charts/*/; do
+            helm package "$chart" --destination .
+          done
+
+      - name: Update index
+        run: |
+          helm repo index . --url https://core-optimizer.github.io/craft-ai-charts --merge index.yaml || helm repo index . --url https://core-optimizer.github.io/craft-ai-charts
+
+      - name: Commit and push
+        run: |
+          git add .
+          git commit -m "Update Helm charts" || true
+          git push
+
+      - name: Setup Pages
+        uses: actions/configure-pages@v4
+
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: '.'
+
+      - name: Deploy to GitHub Pages
+        uses: actions/deploy-pages@v4

@@ -1,0 +1,172 @@
+# Default values for craft-ai-platform
+# This is a YAML-formatted file.
+
+# Controller/Manager configuration
+controller:
+  # Number of controller replicas
+  replicas: 1
+  
+  # Container image settings
+  image:
+    repository: ghcr.io/core-optimizer/craft-ai-platform
+    tag: ""  # Defaults to appVersion
+    pullPolicy: IfNotPresent
+  
+  # Image pull secrets for private registries
+  imagePullSecrets: []
+  
+  # Resource requests and limits
+  resources:
+    requests:
+      cpu: 100m
+      memory: 128Mi
+    limits:
+      cpu: 500m
+      memory: 512Mi
+  
+  # Pod security context
+  podSecurityContext:
+    runAsNonRoot: true
+  
+  # Container security context
+  securityContext:
+    allowPrivilegeEscalation: false
+    capabilities:
+      drop:
+        - ALL
+    readOnlyRootFilesystem: true
+    runAsNonRoot: true
+  
+  # Node selector for pod placement
+  nodeSelector: {}
+  
+  # Tolerations for pod scheduling
+  tolerations: []
+  
+  # Affinity rules
+  affinity: {}
+  
+  # Additional pod annotations
+  podAnnotations: {}
+  
+  # Additional pod labels
+  podLabels: {}
+  
+  # Leader election configuration
+  leaderElect: true
+  
+  # Liveness probe configuration
+  livenessProbe:
+    initialDelaySeconds: 15
+    periodSeconds: 20
+    timeoutSeconds: 1
+    failureThreshold: 3
+  
+  # Readiness probe configuration
+  readinessProbe:
+    initialDelaySeconds: 5
+    periodSeconds: 10
+    timeoutSeconds: 1
+    failureThreshold: 3
+
+# Dashboard configuration
+dashboard:
+  # Enable the dashboard
+  enabled: true
+  
+  # Service configuration
+  service:
+    type: ClusterIP
+    port: 8080
+    # For NodePort type
+    nodePort: null
+    # Annotations for the service
+    annotations: {}
+  
+  # Ingress configuration
+  ingress:
+    enabled: false
+    className: ""
+    annotations: {}
+    hosts:
+      - host: craft-ai.local
+        paths:
+          - path: /
+            pathType: Prefix
+    tls: []
+
+# Metrics configuration
+metrics:
+  # Enable metrics endpoint
+  enabled: true
+  
+  # Service configuration for metrics
+  service:
+    type: ClusterIP
+    port: 8090
+    annotations: {}
+  
+  # ServiceMonitor for Prometheus Operator
+  serviceMonitor:
+    enabled: false
+    interval: 30s
+    scrapeTimeout: 10s
+    labels: {}
+    namespace: ""
+
+# Health probe configuration
+health:
+  port: 8081
+
+# RBAC configuration
+rbac:
+  # Create RBAC resources
+  create: true
+  
+  # Additional rules to add to the ClusterRole
+  additionalRules: []
+
+# Service Account configuration
+serviceAccount:
+  # Create service account
+  create: true
+  # Name of the service account (generated if not set)
+  name: ""
+  # Annotations for the service account
+  annotations: {}
+
+# Namespace configuration
+namespace:
+  # Create namespace
+  create: true
+  # Namespace name
+  name: craft-ai-system
+  # Additional labels for the namespace
+  labels: {}
+  # Additional annotations for the namespace
+  annotations: {}
+
+# CRD installation
+crds:
+  # Install CRDs (disable if managing CRDs separately)
+  install: true
+
+# Additional environment variables for the controller
+extraEnv: []
+
+# Additional volumes
+extraVolumes: []
+
+# Additional volume mounts
+extraVolumeMounts: []
+
+# Pod disruption budget
+podDisruptionBudget:
+  enabled: false
+  minAvailable: 1
+  # maxUnavailable: 1
+
+# Global settings
+global:
+  # Override image registry for all images
+  imageRegistry: ""

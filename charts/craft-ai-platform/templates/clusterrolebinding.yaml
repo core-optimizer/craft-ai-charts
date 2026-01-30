@@ -1,0 +1,16 @@
+{{- if .Values.rbac.create }}
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: {{ include "craft-ai-platform.fullname" . }}
+  labels:
+    {{- include "craft-ai-platform.labels" . | nindent 4 }}
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: {{ include "craft-ai-platform.fullname" . }}
+subjects:
+  - kind: ServiceAccount
+    name: {{ include "craft-ai-platform.serviceAccountName" . }}
+    namespace: {{ include "craft-ai-platform.namespace" . }}
+{{- end }}
