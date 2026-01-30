@@ -3,6 +3,45 @@ entries:
   craft-ai-platform:
   - annotations:
       artifacthub.io/changes: |
+        - kind: changed
+          description: Updated QueueCraft to v0.0.7 with P0 critical fixes
+        - kind: fixed
+          description: Field indexers for O(1) WorkItem lookups
+        - kind: fixed
+          description: Serialized scheduler fixes concurrent admission race condition
+        - kind: added
+          description: Aggressive preemption and auto-restart for preempted workloads
+    apiVersion: v2
+    appVersion: 0.2.1
+    created: "2026-01-30T21:57:12.247758056Z"
+    description: Craft AI Platform - Kubernetes-native ML/AI Model Management and
+      Workload Queueing Platform
+    digest: c493d61a5503f99493e36660ebd95dcac720c9e716d4d560625cbf4ba45fa1c7
+    home: https://github.com/core-optimizer/craft-ai-platform
+    icon: https://raw.githubusercontent.com/core-optimizer/craft-ai-charts/main/icon.png
+    keywords:
+    - kubernetes
+    - machine-learning
+    - ai
+    - model-serving
+    - mlops
+    - queueing
+    - workload-management
+    - scheduling
+    kubeVersion: '>=1.26.0-0'
+    maintainers:
+    - email: team@craft.ai
+      name: Craft AI Team
+    name: craft-ai-platform
+    sources:
+    - https://github.com/core-optimizer/craft-ai-platform
+    - https://github.com/core-optimizer/queuecraft
+    type: application
+    urls:
+    - https://core-optimizer.github.io/craft-ai-charts/craft-ai-platform-0.2.1.tgz
+    version: 0.2.1
+  - annotations:
+      artifacthub.io/changes: |
         - kind: added
           description: Integrated QueueCraft workload queueing functionality
         - kind: added
@@ -11,7 +50,7 @@ entries:
           description: Unified dashboard with queue metrics
     apiVersion: v2
     appVersion: 0.2.0
-    created: "2026-01-30T11:45:02.398723825Z"
+    created: "2026-01-30T21:57:12.245569694Z"
     description: Craft AI Platform - Kubernetes-native ML/AI Model Management and
       Workload Queueing Platform
     digest: dd12e0a6d130b6ed7483207841961113ee6a498cd58a271eaad3a48bdf11df62
@@ -40,7 +79,7 @@ entries:
     version: 0.2.0
   - apiVersion: v2
     appVersion: 0.1.0
-    created: "2026-01-30T11:45:02.397082881Z"
+    created: "2026-01-30T21:57:12.242289556Z"
     description: Craft AI Platform - Kubernetes-native ML/AI Model Management Platform
     digest: 0edf5100b54b1ba2599c77999ae9c067a3a38742913491297e7c991710e3bd7c
     home: https://github.com/core-optimizer/craft-ai-platform
@@ -62,4 +101,4 @@ entries:
     urls:
     - https://core-optimizer.github.io/craft-ai-charts/craft-ai-platform-0.1.0.tgz
     version: 0.1.0
-generated: "2026-01-30T11:45:02.395380979Z"
+generated: "2026-01-30T21:57:12.240639844Z"
